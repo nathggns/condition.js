@@ -25,7 +25,7 @@
         }
 
         if (typeof window !== 'undefined' && window.hasOwnProperty) {
-            return window.hasOwnProperty(obj, prop);
+            return window.hasOwnProperty.call(obj, prop);
         }
 
         throw 'Environment does not support hasOwnProperty';
