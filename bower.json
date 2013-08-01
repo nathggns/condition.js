@@ -1,0 +1,12 @@
+{
+    "name": "condition.js",
+    "description": "Advanced condition library",
+    "version": "1.0.1b",
+    "main": [
+        "./src/condition.js"
+    ],
+    "author": {
+      "name": "Nathaniel Higgins",
+      "web": "http://nath.is"
+    },
+}
