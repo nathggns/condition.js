@@ -1,5 +1,5 @@
 /*!
- * condition v1.1.0
+ * condition v1.1.1
  * Copyright (c) 2013 Nathaniel Higgins; Licensed MIT
  * Built on 2013-08-01 
  */
