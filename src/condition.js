@@ -17,14 +17,18 @@
      * @return {bool}        Does the object have it's own property
      *
      * @todo Make this work in browsers that don't even have window.hasOwnProperty
-     * @todo Default to Object.prototype.hasOwnProperty
      */
     var has = function(obj, prop) {
-        if (typeof window !== 'undefined' && window.hasOwnProperty) {
-            return window.hasOwnProperty(obj, prop);
+
+        if (typeof obj.hasOwnProperty !== 'undefined') {
+            return obj.hasOwnProperty(prop);
         }
 
-        return obj.hasOwnProperty(prop);
+        if (typeof window !== 'undefined' && window.hasOwnProperty) {
+            return window.hasOwnProperty.call(obj, prop);
+        }
+
+        throw 'Environment does not support hasOwnProperty';
     };
 
     /**
