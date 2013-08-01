@@ -1,7 +1,7 @@
 /*!
- * condition v1.0.1b
+ * condition v1.1.0
  * Copyright (c) 2013 Nathaniel Higgins; Licensed MIT
- * Built on 2013-07-01 
+ * Built on 2013-08-01 
  */
 (function() {
 
