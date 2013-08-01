@@ -1,5 +1,14 @@
 # Changelog
 
-## Version 1
+## Version 1.1.1
+
+ - Fix Bower
+
+## Version 1.1.0
+
+ - Add Bower (@nathggns)
+ - Fix in browser (@nathggns)
+
+## Version 1.0.0
 
  - Initial Commit (@nathggns)
