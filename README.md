@@ -25,7 +25,7 @@ condition.wait(function() {
     return true;
 }, function(res) {
     // This is your callback
-    // Res is the result from your conditio
+    // Res is the result from your condition
     console.log('Callback!');
 });
 
@@ -34,12 +34,33 @@ condition.when(function() {
     // Do your condition testing here
     return true;
 }, function(res) {
-    // Do your condition testing here
-    // Res is the result from your conditio
+    // Res is the result from your condition
     return true;
+});
+
+// Call a function until a condition becomes true
+condition.until(function () {
+    // Do your condition testing here
+    return true;
+}, function (res) {
+    // Execute this function until the previous condition returns true
 });
 ```
 
 ## Asynchronous Conditions
 
 Sometimes your condition functions will be asynchronous, `condition` supports that too. Simply ask for at least one argument in your condition function, and `condition` will assume that it is an asynchronous condition. Call the first argument that the condition function is passed, with your "result", when you're done.
+
+Here's an example:
+
+```js
+condition.wait(function (done) {
+    setTimeout(function () {
+        // Call the done() function you passed as a parameter
+        // with the result of your condition
+        done("truthy value");
+    }, 100);
+}, function (res) {
+    console.log(res); // logs "truthy value"
+});
+```
