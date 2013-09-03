@@ -50,3 +50,17 @@ condition.until(function () {
 ## Asynchronous Conditions
 
 Sometimes your condition functions will be asynchronous, `condition` supports that too. Simply ask for at least one argument in your condition function, and `condition` will assume that it is an asynchronous condition. Call the first argument that the condition function is passed, with your "result", when you're done.
+
+Here's an example:
+
+```js
+condition.wait(function (done) {
+    setTimeout(function () {
+        // Call the done() function you passed as a parameter
+        // with the result of your condition
+        done("truthy value");
+    }, 100);
+}, function (res) {
+    console.log(res); // logs "truthy value"
+});
+```
