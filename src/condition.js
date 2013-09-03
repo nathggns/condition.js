@@ -58,7 +58,7 @@
     /**
      * All condition functions go through this function
      * @param  {object}   config    Config for the type of condition
-     * @param  {Function} condition The conditin object to call
+     * @param  {Function} condition The condition object to call
      * @param  {Function} callback  The callback to call
      */
     var condition = function(config, condition, callback) {
@@ -71,7 +71,7 @@
         /**
          * The function called when the condition has finished running
          * Needs to be in a seperate function so we can support
-         * async coniditions
+         * async conditions
          * 
          * @param  {any} result Result of the condition function.
          */
@@ -79,6 +79,10 @@
 
             // We only want to call the callback if the condition result evalulates as true
             if (result) {
+                // If we're doing the "until" type of condition, end if result is true
+                if (config.type === 'until') {
+                    return;
+                }
 
                 callback(result);
 
@@ -86,6 +90,10 @@
                 if (config.type === 'wait') {
                     return;
                 }
+            }
+            // If the type is "until" and result is false, restart the loop on the next tick
+            else if (!result && config.type === 'until') {
+                callback(result);
             }
 
             // The condition didn't evaluate to true, or we're doing
@@ -114,6 +122,9 @@
     // get around that.
     var generate_condition = function(type) {
         return function() {
+            // arguments will be the array to be "unshifted":
+            // the {type, async} object will be pushed as the first
+            // item in arguments
             Array.prototype.unshift.call(arguments, {
                 type: type,
                 async: true
@@ -124,7 +135,7 @@
     };
 
     // The types of condition objects we have
-    var types = ['wait', 'when'];
+    var types = ['wait', 'when', 'until'];
 
     // Assign all the types to the condition object
     for (var k in types) {
