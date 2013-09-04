@@ -7,7 +7,7 @@
     var tick = (typeof setImmediate !== 'undefined' && function(callback) {
 
         if (typeof callback !== 'function') {
-            debugger;
+            // debugger;
         }
 
         return setImmediate(callback);
@@ -187,30 +187,6 @@
     };
 
     /**
-     * Extract arguments array from function.
-     * @param  {Function} func Function to extract arguments from
-     * @return {array}         Arguments array
-     */
-    var args = function(func) {
-        // Get the "string" version of the function
-        var string = func.toString();
-
-        var args = string
-            .replace(/\s/g, '') // Remove all whitespace, we don't need that to get the arguments
-            .split('function')[1] // Get the bit after the function decleration
-            .split(')')[0] // Get the bit before the end of the arguments list
-            .split('(') // Get the bit after the start of the arguments list
-            .slice(1)[0] // Get the actual args
-            .split(','); // Split the args into an array
-
-        // The result of args will be an array with one blank item
-        // if there are no arguments. Instead, we want a blank array
-        if (args.length === 1 && args[0] === '') args = [];
-
-        return args;
-    };
-
-    /**
      * All condition functions go through this function
      * @param {object}   config    Config for the type of condition
      * @param {Function} condition The condition object to call
@@ -245,7 +221,7 @@
          * Is this an asynchronous condition function?
          * @type {Boolean}
          */
-        var isAsync = config.async && args(condition).length > 0;
+        var isAsync = config.async && condition.length > 0;
 
         /**
          * We'll create a reference to this so that done knows how
@@ -381,7 +357,6 @@
     Condition.condition = condition;
     Condition.tick = tick;
     Condition.has = has;
-    Condition.args = args;
 
     // This is the bit where we assign our Condition object in different ways
     if (typeof module !== 'undefined' && 'exports' in module) {
