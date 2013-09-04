@@ -5,6 +5,11 @@
      * @param  {Function} callback Callback to call
      */
     var tick = (typeof setImmediate !== 'undefined' && function(callback) {
+
+        if (typeof callback !== 'function') {
+            debugger;
+        }
+
         return setImmediate(callback);
     }) || function(callback) {
         return setTimeout(callback, 0);
@@ -207,11 +212,28 @@
 
     /**
      * All condition functions go through this function
-     * @param  {object}   config    Config for the type of condition
-     * @param  {Function} condition The condition object to call
-     * @param  {Function} callback  The callback to call
+     * @param {object}   config    Config for the type of condition
+     * @param {Function} condition The condition object to call
+     * @param {Function} callback  The callback to call
+     * @param {Boolean}  autoCheck Should we automatically start watching?
+     * 
+     * @return {Function} Function to manually check the condition. 
+     *                    Has some extra properties too.
+     *                    {
+     *                        @property isWatching    are we currently watching
+     *                        @method   startWatching Start watching
+     *                        @method   stopWatching  stop watching
+     *                    }
      */
-    var condition = function(config, condition, callback) {
+    var condition = function(config, condition, callback, autoCheck) {
+
+        /**
+         * Lets default autoCheck to true
+         */
+        if (typeof autoCheck === 'undefined') {
+            autoCheck = true;
+        }
+
         /**
          * We'll set this to a function that does nothing so
          * we don't have to check for the variable when we're
@@ -229,7 +251,64 @@
          * We'll create a reference to this so that done knows how
          * to tick, despite defining it afterwards.
          */
-        var tick;
+        var check;
+
+        /**
+         * We'll create a reference to done to as we'll need it before
+         * it's actually defined.
+         */
+        var done;
+
+        /**
+         * This sort of controls starting and stopping
+         */
+        check = function() {
+            /**
+             * Get the result from the condition function.
+             * @type {mixed}
+             */
+            var result = condition(config.async && done);
+
+            /**
+             * If we're not calling asynchronously, call the done function
+             * straight away.
+             */
+            if (!isAsync) {
+                done(result);
+            }
+        };
+
+        /**
+         * Are we watching or not?
+         *
+         * @type {Boolean}
+         */
+        check.isWatching = false;
+
+        /**
+         * This starts a continous tick
+         */
+        check.startWatching = function() {
+            check.isWatching = true;
+
+            /**
+             * Call the tick differently depending on if we're
+             * asynchronous or not.
+             */
+            if (isAsync) {
+                setTimeout(check);
+            } else {
+                rem = ticker.add(check);
+            }
+        };
+
+        /**
+         * This stops watching
+         */
+        check.stopWatching = function() {
+            check.isWatching = false;
+            rem();
+        };
 
         /**
          * The function called when the condition has finished running
@@ -238,7 +317,7 @@
          * 
          * @param  {any} result Result of the condition function.
          */
-        var done = function(result) {
+        done = function(result) {
             // We only want to call the callback if the condition result evalulates as true
             if (result) {
                 // If we're doing the "until" type of condition, end if result is true
@@ -259,39 +338,14 @@
             /**
              * If we're doing an asynchronous condition function, "tick"
              */
-            if (isAsync) {
-                setTimeout(tick);
+            if (isAsync && check.isWatching) {
+                tick(check);
             }
         };
 
-        /**
-         * Define a function that is called for each "tick"
-         */
-        tick = function() {
-            /**
-             * Get the result from the condition function.
-             * @type {mixed}
-             */
-            var result = condition(config.async && done);
+        check.startWatching();
 
-            /**
-             * If we're not calling asynchronously, call the done function
-             * straight away.
-             */
-            if (!isAsync) {
-                done(result);
-            }
-        };
-
-        /**
-         * Call the tick differently depending on if we're
-         * asynchronous or not.
-         */
-        if (isAsync) {
-            setTimeout(tick);
-        } else {
-            rem = ticker.add(tick);
-        }
+        return check;
     };
 
     // Time to build the condition object with the different types

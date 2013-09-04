@@ -3,9 +3,9 @@ var should = require('should');
 
 describe('condition', function () {
 
-    it('should expose the until() function', function () {
-        condition.until.should.be.a('function');
-    });
+    // it('should expose the until() function', function () {
+    //     condition.until.should.be.a('function');
+    // });
 
     describe('until', function () {
 
