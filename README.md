@@ -3,6 +3,8 @@ condition
 
 Advanced condition library for Node, Phantom, RequireJS, CommonJS and the Browser. 
 
+**WARNING**: This package has been deprecated and is not in active development. Most of your use cases for this library can be solved with Promises, which are now a native feature of JavaScript. 
+
 ## Changelog
 
 [**View Changelog**](Changelog.md)
